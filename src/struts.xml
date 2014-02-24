@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="false" />
+
+    <package name="default" namespace="/" extends="struts-default,json-default">
+		<interceptors>
+			<interceptor-stack name="defaultFileUploadStack">
+				<interceptor-ref name="fileUpload">
+					<param name="maximumSize">10485760</param> <!-- 10 MB -->
+					<param name="allowedTypes">image/jpeg,image/gif,image/png,image/tif,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,text/plain,application/vnd.oasis.opendocument.text,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet </param> 
+				</interceptor-ref>
+				<interceptor-ref name="params">
+					 <param name="excludeParams">struts.token.name</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+        <default-action-ref name="index" />
+
+        <global-results>
+            <result name="error">/error.jsp</result>
+        </global-results>
+
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+
+        <action name="index">
+            <result type="redirectAction">
+                <param name="actionName">home</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="home" method="" class="com.edspread.meeting.action.HomeAction" >
+            <result name="success">/pages/recordingtest.jsp</result>
+        </action>
+        
+        <action name="getallpages" method="getAllPage" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties">pageCount,imageUrl</param>
+			</result>
+		</action>
+		 <action name="getmeetingjson" method="getmeetingjson" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties">jsonContent</param>
+			</result>
+		</action>
+		<action name="setrecordingenv" method="setRecordingEnv" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties">status</param>
+			</result>
+		</action>
+		<action name="deleterecording" method="deleteExistingRecordingFile" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties"></param>
+			</result>
+		</action>
+		<action name="copyrecording" method="copyRecordingFile" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties"></param>
+			</result>
+		</action>
+		
+		<action name="getmeetinglist" method="getallMeetingName" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties">status,meetings\[\d+\]</param>
+			</result>
+		</action>
+		
+		
+		<action name="save" method="saveMeetingdata" class="com.edspread.meeting.action.HomeAction" >
+			<result name="error" type="json">
+				<param name="ignoreHierarchy">false</param>
+				<param name="includeProperties">actionErrors\[\d+\]</param>
+			</result>
+			<result name="success" type="json">
+				<param name="enableGZIP">true</param>
+				<param name="includeProperties">status</param>
+			</result>
+			
+			
+		</action>
+		
+		<action name="uploadTemp" class="com.edspread.meeting.action.UploadAction"	method="uploadTempFile">
+		 	<interceptor-ref name="defaultFileUploadStack"/>
+		 	<interceptor-ref name="json" />
+				<result name="error" type="json"><!-- /pages/error.jsp --></result>
+				<result name="input" type="json"></result>
+				<result name="success" type="json">
+					<param name="enableGZIP">true</param>
+					<param name="excludeProperties">attachment\[\d+\]</param>
+				</result>
+		</action>
+    </package>
+    
+    <!-- Add packages here -->
+
+</struts>
