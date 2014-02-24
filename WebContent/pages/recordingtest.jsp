@@ -243,7 +243,7 @@
 
 	
 	/*
-	 *
+	 *called on document loaded
 	 *
 	*/
 	jQuery(document).ready(function(){
